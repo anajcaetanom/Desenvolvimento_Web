@@ -15,35 +15,21 @@ header("Access-Control-Allow-Headers: *");
  */
 
 require_once('conexao_db.php');
+require_once('autenticacao.php');
 
 // array de resposta
 $resposta = array();
 
 // verifica se todos os campos necessários foram enviados ao servidor
-if (isset($_POST['login']) && (
-        isset($_POST['nome']) || isset($_POST['email']))
-) {
-
-    $login = trim($_POST['login']);
-
-    $campos_para_atualizar = [];
-    $valores = [];
-
-    if (!empty($_POST['nome'])) {
-        $campos_para_atualizar[] = "nome = ?";
-        $valores[] = trim($_POST['nome']);
-    }
-
-    if (!empty($_POST['email'])) {
-        $campos_para_atualizar[] = "email = ?";
-        $valores[] = trim($_POST['email']);
-    }
-
-    if (count($campos_para_atualizar) > 0) {
-        
-    }
-
+if (autenticar($db_con)) {
+    
+} else {
+    // senha ou usuario nao confere
+    $resposta["sucesso"] = 0;
+    $resposta["erro"] = "usuario ou senha não confere";
+    $resposta["cod_erro"] = 0;
 }
+
 
 
 // A conexão com o bd sempre tem que ser fechada
