@@ -74,7 +74,7 @@ if(autenticar($db_con)) {
 			
 			// A proxima linha insere um novo produto no BD.
 			// A variavel consulta indica se a insercao foi feita corretamente ou nao.
-			$consulta = $db_con->prepare("INSERT INTO produtos(nome, preco, descricao, img, usuarios_login) VALUES('$nome', '$preco', '$descricao', '$img_url', '$login')");
+			$consulta = $db_con->prepare("INSERT INTO produtos(nome, preco, descricao, img, usuarios_login) VALUES('$nome', '$preco', '$descricao', '$img_url', '$id')");
 			if ($consulta->execute()) {
 				// Se o produto foi inserido corretamente no servidor, o cliente 
 				// recebe a chave "sucesso" com valor 1

@@ -23,25 +23,22 @@ $resposta = array();
 if (isset($_POST['novo_login']) && isset($_POST['nova_senha']) && 
     isset($_POST['nome']) && isset($_POST['email'])) {
  
-    // o método trim elimina caracteres especiais/ocultos da string
+    // o metodo trim elimina caracteres especiais/ocultos da string
 	$novo_login = trim($_POST['novo_login']);
 	$nova_senha = trim($_POST['nova_senha']);
-    
+
+    // variáveis novas requisitadas no exercício
     $nome = $_POST['nome'];
     $email = $_POST['email'];
-	
-	// o bd não armazena diretamente a senha do usuário, mas sim 
-	// um código hash que é gerado a partir da senha.
+
+	// código hash que é gerado a partir da senha
 	$token = password_hash($nova_senha, PASSWORD_DEFAULT);
-	
-	// antes de registrar o novo usuário, verificamos se 
-	// ele já não existe.
+
+	// verifica se o usuário já não existe.
 	$consulta_usuario_existe = $db_con->prepare("SELECT login FROM usuarios WHERE login='$novo_login'");
 	$consulta_usuario_existe->execute();
-	if ($consulta_usuario_existe->rowCount() > 0) { 
-		// se já existe um usuario para login
-		// indicamos que a operação não teve sucesso e o motivo
-		// no campo de erro.
+
+	if ($consulta_usuario_existe->rowCount() > 0) {
 		$resposta["sucesso"] = 0;
 		$resposta["erro"] = "usuario ja cadastrado";
 		$resposta["cod_erro"] = 1;
@@ -55,8 +52,7 @@ if (isset($_POST['novo_login']) && isset($_POST['nova_senha']) &&
 			$resposta["sucesso"] = 1;
 		}
 		else {
-			// se houve erro na consulta, indicamos que não houve sucesso
-			// na operação e o motivo no campo de erro.
+			// erro na consulta
 			$resposta["sucesso"] = 0;
 			$resposta["erro"] = "erro BD: " . $consulta->error;
 			$resposta["cod_erro"] = 2;
@@ -64,9 +60,7 @@ if (isset($_POST['novo_login']) && isset($_POST['nova_senha']) &&
 	}
 }
 else {
-	// se não foram enviados todos os parâmetros para o servidor, 
-	// indicamos que não houve sucesso
-	// na operação e o motivo no campo de erro.
+	// não foram enviados todos os parâmetros para o servidor
     $resposta["sucesso"] = 0;
 	$resposta["erro"] = "faltam parametros";
 	$resposta["cod_erro"] = 3;
@@ -75,7 +69,5 @@ else {
 // A conexão com o bd sempre tem que ser fechada
 $db_con = null;
 
-// converte o array de resposta em uma string no formato JSON e 
-// imprime na tela.
+// converte o array de resposta em uma string no formato JSON e imprime na tela.
 echo json_encode($resposta);
-?>
