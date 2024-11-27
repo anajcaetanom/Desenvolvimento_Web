@@ -24,7 +24,7 @@ $resposta = array();
 if (autenticar($db_con)) {
 
     // pega o login autenticado
-    $login = $GLOBALS['id'];
+    $login = $GLOBALS['login'];
 
     // prepara a consulta
     $consulta = $db_con->prepare("DELETE FROM usuarios WHERE login = ?");
@@ -32,17 +32,17 @@ if (autenticar($db_con)) {
     // exclui
     if ($consulta->execute([$login])) {
         $resposta["sucesso"] = 1;
-        $resposta["mensagem"] = "Usuario excluido.";
+        $resposta["mensagem"] = "usuario excluido.";
     } else {
         $resposta["sucesso"] = 0;
-        $resposta["erro"] = "Erro ao excluir usuario.";
+        $resposta["erro"] = "erro ao excluir usuario.";
         $resposta["cod_erro"] = 2;
     }
 
 } else {
     // senha ou usuário nao confere
     $resposta["sucesso"] = 0;
-    $resposta["erro"] = "Login ou senha nao conferem.";
+    $resposta["erro"] = "login ou senha nao conferem.";
     $resposta["cod_erro"] = 0;
 }
 

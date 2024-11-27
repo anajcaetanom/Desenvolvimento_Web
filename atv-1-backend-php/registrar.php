@@ -34,10 +34,9 @@ if (isset($_POST['novo_login']) && isset($_POST['nova_senha']) &&
 	// código hash que é gerado a partir da senha
 	$token = password_hash($nova_senha, PASSWORD_DEFAULT);
 
-	// verifica se o usuário já não existe.
+	// verifica se o usuário já existe.
 	$consulta_usuario_existe = $db_con->prepare("SELECT login FROM usuarios WHERE login='$novo_login'");
 	$consulta_usuario_existe->execute();
-
 	if ($consulta_usuario_existe->rowCount() > 0) {
 		$resposta["sucesso"] = 0;
 		$resposta["erro"] = "usuario ja cadastrado";

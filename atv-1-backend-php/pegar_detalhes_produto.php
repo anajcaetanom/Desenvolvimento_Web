@@ -38,7 +38,7 @@ if (isset($_GET['id'])) {
         $resposta["img"] = $produto['img'];
     } else {
         $resposta["sucesso"] = 0;
-        $resposta["erro"] = "Produto nao encontrado.";
+        $resposta["erro"] = "produto nao encontrado.";
         $resposta["cod_erro"] = 4;
     }
 

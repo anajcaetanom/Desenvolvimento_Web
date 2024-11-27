@@ -24,7 +24,7 @@ $resposta = array();
 if (autenticar($db_con)) {
 
     // pega o login autenticado
-    $login = $GLOBALS['id'];
+    $login = $GLOBALS['login'];
 
     // verifica se o parâmetro necessário foi enviado ao servidor
     if (isset($_POST['nova_senha']) && !empty(trim($_POST['nova_senha']))) {
@@ -36,10 +36,10 @@ if (autenticar($db_con)) {
 
         if ($consulta->execute([$token, $login])) {
             $resposta["sucesso"] = 1;
-            $resposta["cod_sucesso"] = "Senha atualizada.";
+            $resposta["cod_sucesso"] = "senha atualizada.";
         } else {
             $resposta["sucesso"] = 0;
-            $resposta["erro"] = "Falha ao atualizar senha.";
+            $resposta["erro"] = "falha ao atualizar senha.";
             $resposta["cod_erro"] = 2;
         }
 
@@ -47,14 +47,14 @@ if (autenticar($db_con)) {
     } else {
         // não foi enviado o parâmetro para o servidor
         $resposta["sucesso"] = 0;
-        $resposta["erro"] = "Faltam parâmetros.";
+        $resposta["erro"] = "faltam parametros.";
         $resposta["cod_erro"] = 3;
     }
 
 } else {
     // senha ou usuário nao confere
     $resposta["sucesso"] = 0;
-    $resposta["erro"] = "Login ou senha não conferem.";
+    $resposta["erro"] = "login ou senha não conferem.";
     $resposta["cod_erro"] = 0;
 }
 

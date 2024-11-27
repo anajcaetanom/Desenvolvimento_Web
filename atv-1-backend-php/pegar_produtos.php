@@ -41,50 +41,91 @@ if(autenticar($db_con)) {
 	 
 		$limit = $_GET['limit'];
 		$offset = $_GET['offset'];
- 
-		// Realiza uma consulta ao BD e obtem todos os produtos.
-		$consulta = $db_con->prepare("SELECT * FROM produtos LIMIT " . $limit . " OFFSET " . $offset);
-		if($consulta->execute()) {
-			
-			$nProdutos = $db_con->query("SELECT COUNT(*) FROM produtos")->fetchColumn(); 
-			
-			// Caso existam produtos no BD, eles sao armazenados na 
-			// chave "produtos". O valor dessa chave e formado por um 
-			// array onde cada elemento e um produto.
-			$resposta["produtos"] = array();
-			$resposta["sucesso"] = 1;
-			$resposta["qtde_produtos"] = $nProdutos;
 
-			if ($consulta->rowCount() > 0) {
-				while ($linha = $consulta->fetch(PDO::FETCH_ASSOC)) {
-					// Para cada produto, sao retornados somente o 
-					// pid (id do produto), o nome do produto e o preço. Nao ha necessidade 
-					// de retornar nesse momento todos os campos dos produtos 
-					// pois a app cliente, inicialmente, so precisa do nome e preço do mesmo para 
-					// exibir na lista de produtos. O campo id e usado pela app cliente 
-					// para buscar os detalhes de um produto especifico quando o usuario 
-					// o seleciona. Esse tipo de estrategia poupa banda de rede, uma vez 
-					// os detalhes de um produto somente serao transferidos ao cliente 
-					// em caso de real interesse.
-					$produto = array();
-					$produto["id"] = $linha["id"];
-					$produto["nome"] = $linha["nome"];
-					$produto["preco"] = $linha["preco"];
-					$produto["img"] = $linha["img"];
-			 
-					// Adiciona o produto no array de produtos.
-					array_push($resposta["produtos"], $produto);
-				}
-			}
-		}
-		else {
-			// Caso ocorra falha no BD, o cliente 
-			// recebe a chave "sucesso" com valor 0. A chave "erro" indica o 
-			// motivo da falha.
-			$resposta["sucesso"] = 0;
-			$resposta["erro"] = "Erro no BD: " . $consulta->error;
-			$resposta["cod_erro"] = 2;
-		}
+        // verifica se algum login foi passado como parâmetro
+        if (isset($_GET['login'])) {
+            $login = $_GET['login'];
+
+            $consulta = $db_con->prepare("SELECT * FROM produtos WHERE usuarios_login = ? LIMIT " . $limit . " OFFSET " . $offset);
+            if($consulta->execute([$login])) {
+                $stmt = $db_con->prepare("SELECT COUNT(*) FROM produtos WHERE usuarios_login = ?");
+                $stmt->execute([$login]);
+                $nProdutos = $stmt->fetchColumn();
+
+                // Caso existam produtos no BD, eles sao armazenados na
+                // chave "produtos". O valor dessa chave e formado por um
+                // array onde cada elemento e um produto.
+                $resposta["produtos"] = array();
+                $resposta["sucesso"] = 1;
+                $resposta["qtde_produtos"] = $nProdutos;
+
+                if ($consulta->rowCount() > 0) {
+                    while ($linha = $consulta->fetch(PDO::FETCH_ASSOC)) {
+                        // Para cada produto, sao retornados somente o
+                        // pid (id do produto), o nome do produto e o preço. Nao ha necessidade
+                        // de retornar nesse momento todos os campos dos produtos
+                        // pois a app cliente, inicialmente, so precisa do nome e preço do mesmo para
+                        // exibir na lista de produtos. O campo id e usado pela app cliente
+                        // para buscar os detalhes de um produto especifico quando o usuario
+                        // o seleciona. Esse tipo de estrategia poupa banda de rede, uma vez
+                        // os detalhes de um produto somente serao transferidos ao cliente
+                        // em caso de real interesse.
+                        $produto = array();
+                        $produto["id"] = $linha["id"];
+                        $produto["nome"] = $linha["nome"];
+                        $produto["preco"] = $linha["preco"];
+                        $produto["img"] = $linha["img"];
+
+                        // Adiciona o produto no array de produtos.
+                        array_push($resposta["produtos"], $produto);
+                    }
+                }
+            }
+        } else {
+            // Realiza uma consulta ao BD e obtem todos os produtos.
+            $consulta = $db_con->prepare("SELECT * FROM produtos LIMIT " . $limit . " OFFSET " . $offset);
+            if($consulta->execute()) {
+
+                $nProdutos = $db_con->query("SELECT COUNT(*) FROM produtos")->fetchColumn();
+
+                // Caso existam produtos no BD, eles sao armazenados na
+                // chave "produtos". O valor dessa chave e formado por um
+                // array onde cada elemento e um produto.
+                $resposta["produtos"] = array();
+                $resposta["sucesso"] = 1;
+                $resposta["qtde_produtos"] = $nProdutos;
+
+                if ($consulta->rowCount() > 0) {
+                    while ($linha = $consulta->fetch(PDO::FETCH_ASSOC)) {
+                        // Para cada produto, sao retornados somente o
+                        // pid (id do produto), o nome do produto e o preço. Nao ha necessidade
+                        // de retornar nesse momento todos os campos dos produtos
+                        // pois a app cliente, inicialmente, so precisa do nome e preço do mesmo para
+                        // exibir na lista de produtos. O campo id e usado pela app cliente
+                        // para buscar os detalhes de um produto especifico quando o usuario
+                        // o seleciona. Esse tipo de estrategia poupa banda de rede, uma vez
+                        // os detalhes de um produto somente serao transferidos ao cliente
+                        // em caso de real interesse.
+                        $produto = array();
+                        $produto["id"] = $linha["id"];
+                        $produto["nome"] = $linha["nome"];
+                        $produto["preco"] = $linha["preco"];
+                        $produto["img"] = $linha["img"];
+
+                        // Adiciona o produto no array de produtos.
+                        array_push($resposta["produtos"], $produto);
+                    }
+                }
+            }
+            else {
+                // Caso ocorra falha no BD, o cliente
+                // recebe a chave "sucesso" com valor 0. A chave "erro" indica o
+                // motivo da falha.
+                $resposta["sucesso"] = 0;
+                $resposta["erro"] = "Erro no BD: " . $consulta->error;
+                $resposta["cod_erro"] = 2;
+            }
+        }
 	}
 	else {
 		// Se a requisicao foi feita incorretamente, ou seja, os parametros 
@@ -108,4 +149,3 @@ $db_con = null;
 
 // Converte a resposta para o formato JSON.
 echo json_encode($resposta);
-?>

@@ -30,6 +30,8 @@ $resposta = array();
 
 // verifica se o usuário conseguiu autenticar
 if(autenticar($db_con)) {
+
+    $login = $GLOBALS['login'];
 	
 	// Primeiro, verifica-se se todos os parametros foram enviados pelo cliente.
 	// A criacao de um produto precisa dos seguintes parametros:
@@ -37,7 +39,8 @@ if(autenticar($db_con)) {
 	// preco - preco do produto
 	// descricao - descricao do produto
 	// img - imagem do produto
-	if (isset($_POST['nome']) && isset($_POST['preco']) && isset($_POST['descricao']) && isset($_FILES['img'])) {
+	if (isset($_POST['nome']) && isset($_POST['preco']) &&
+        isset($_POST['descricao']) && isset($_FILES['img'])) {
 		
 		// Aqui sao obtidos os parametros
 		$nome = $_POST['nome'];
@@ -74,11 +77,12 @@ if(autenticar($db_con)) {
 			
 			// A proxima linha insere um novo produto no BD.
 			// A variavel consulta indica se a insercao foi feita corretamente ou nao.
-			$consulta = $db_con->prepare("INSERT INTO produtos(nome, preco, descricao, img, usuarios_login) VALUES('$nome', '$preco', '$descricao', '$img_url', '$id')");
+			$consulta = $db_con->prepare("INSERT INTO produtos(nome, preco, descricao, img, usuarios_login) VALUES('$nome', '$preco', '$descricao', '$img_url', '$login')");
 			if ($consulta->execute()) {
 				// Se o produto foi inserido corretamente no servidor, o cliente 
 				// recebe a chave "sucesso" com valor 1
 				$resposta["sucesso"] = 1;
+                $resposta["id_produto"] = $db_con->lastInsertId(); // ana julia: coloquei pra eu saber qual o id do produto sem precisar ir no bd
 			} else {
 				// Se o produto nao foi inserido corretamente no servidor, o cliente 
 				// recebe a chave "sucesso" com valor 0. A chave "erro" indica o 

@@ -28,6 +28,7 @@ if (isset($_GET['login'])) {
     $consulta->execute([$login]);
     // verifica se user foi encontrado
     if ($consulta->rowCount() > 0) {
+        // pega os dados do user
         $usuario = $consulta->fetch(PDO::FETCH_ASSOC);
         $resposta["sucesso"] = 1;
         $resposta["nome"] = $usuario['nome'];

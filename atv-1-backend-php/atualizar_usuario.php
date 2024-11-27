@@ -37,10 +37,10 @@ if (autenticar($db_con)) {
 
             if ($consulta->execute([$novo_nome, $login])) {
                 $resposta["sucesso"] = 1;
-                $resposta["cod_sucesso"] = "Nome atualizado.";
+                $resposta["cod_sucesso"] = "nome atualizado.";
             } else {
                 $resposta["sucesso"] = 0;
-                $resposta["erro"] = "Falha ao atualizar o nome.";
+                $resposta["erro"] = "falha ao atualizar o nome.";
                 $resposta["cod_erro"] = 2;
             }
         }
@@ -53,10 +53,10 @@ if (autenticar($db_con)) {
 
             if ($consulta->execute([$novo_email, $login])) {
                 $resposta["sucesso"] = 1;
-                $resposta["mensagem_email"] = "Email atualizado.";
+                $resposta["mensagem_email"] = "email atualizado.";
             } else {
                 $resposta["sucesso"] = 0;
-                $resposta["erro"] = "Falha ao atualizar o email.";
+                $resposta["erro"] = "falha ao atualizar o email.";
                 $resposta["cod_erro"] = 2;
             }
         }
@@ -64,14 +64,14 @@ if (autenticar($db_con)) {
     } else {
         // não foram enviados nenhum parâmetro válido para o servidor
         $resposta["sucesso"] = 0;
-        $resposta["erro"] = "Faltam parâmetros.";
+        $resposta["erro"] = "faltam parâmetros.";
         $resposta["cod_erro"] = 3;
     }
     
 } else {
     // senha ou usuário nao confere
     $resposta["sucesso"] = 0;
-    $resposta["erro"] = "Login ou senha não conferem.";
+    $resposta["erro"] = "login ou senha não conferem.";
     $resposta["cod_erro"] = 0;
 }
 

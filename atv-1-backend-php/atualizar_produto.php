@@ -34,8 +34,8 @@ if (autenticar($db_con)) {
         $id = trim($_GET['id']);
 
         // pega o produto
-        $consulta = $db_con->prepare("SELECT usuarios_login FROM produtos id = '$id'");
-        $consulta->execute();
+        $consulta = $db_con->prepare("SELECT * FROM produtos WHERE id = ?");
+        $consulta->execute([$id]);
 
         // verifica se produto existe
         if ($consulta->rowCount() > 0) {
