@@ -31,10 +31,14 @@ if (autenticar($db_con)) {
         isset($_POST['novo_nome']) || isset($_POST['novo_preco']) ||
         isset($_POST['nova_descricao']) || isset($_POST['nova_img']))) {
 
-        $id = trim($_GET['id']);
+        $id = trim($_POST['id']);
 
         // pega o produto
-        $consulta = $db_con->prepare("SELECT * FROM produtos WHERE id = ?");
+        $consulta = $db_con->prepare(
+            "SELECT * 
+             FROM produtos 
+             WHERE id = ?");
+            
         $consulta->execute([$id]);
 
         // verifica se produto existe
@@ -47,9 +51,13 @@ if (autenticar($db_con)) {
 
                 // atualiza o nome se foi enviado
                 if (isset($_POST['novo_nome']) && !empty(trim($_POST['novo_nome']))) {
+
                     $novo_nome = trim($_POST['novo_nome']);
 
-                    $consulta = $db_con->prepare("UPDATE produtos SET nome = ? WHERE id = ?");
+                    $consulta = $db_con->prepare(
+                        "UPDATE produtos 
+                         SET nome = ? 
+                         WHERE id = ?");
 
                     if ($consulta->execute([$novo_nome, $id])) {
                         $resposta["sucesso"] = 1;
@@ -63,9 +71,13 @@ if (autenticar($db_con)) {
 
                 // atualiza o preço se foi enviado
                 if (isset($_POST['novo_preco']) && !empty(trim($_POST['novo_preco']))) {
+                    
                     $novo_preco = trim($_POST['novo_preco']);
 
-                    $consulta = $db_con->prepare("UPDATE usuarios SET preco = ? WHERE id = ?");
+                    $consulta = $db_con->prepare(
+                        "UPDATE produtos 
+                        SET preco = ? 
+                        WHERE id = ?");
 
                     if ($consulta->execute([$novo_preco, $id])) {
                         $resposta["sucesso"] = 1;
@@ -79,9 +91,13 @@ if (autenticar($db_con)) {
 
                 // atualiza descrição se foi enviada
                 if (isset($_POST['nova_descricao']) && !empty(trim($_POST['nova_descricao']))) {
+                    
                     $nova_descricao = trim($_POST['nova_descricao']);
 
-                    $consulta = $db_con->prepare("UPDATE usuarios SET descricao = ? WHERE id = ?");
+                    $consulta = $db_con->prepare(
+                        "UPDATE produtos 
+                         SET descricao = ? 
+                         WHERE id = ?");
 
                     if ($consulta->execute([$nova_descricao, $id])) {
                         $resposta["sucesso"] = 1;
@@ -95,9 +111,13 @@ if (autenticar($db_con)) {
 
                 // atualiza imagem se foi enviada
                 if (isset($_POST['nova_img']) && !empty(trim($_POST['nova_img']))) {
+                    
                     $nova_img = trim($_POST['nova_img']);
 
-                    $consulta = $db_con->prepare("UPDATE usuarios SET img = ? WHERE id = ?");
+                    $consulta = $db_con->prepare(
+                        "UPDATE produtos 
+                        SET img = ? 
+                        WHERE id = ?");
 
                     if ($consulta->execute([$nova_img, $id])) {
                         $resposta["sucesso"] = 1;

@@ -30,7 +30,11 @@ if (autenticar($db_con)) {
         $id = $_POST['id'];
 
         // pega o produto
-        $consulta = $db_con->prepare("SELECT * FROM produtos WHERE id = ?");
+        $consulta = $db_con->prepare(
+            "SELECT * 
+             FROM produtos 
+             WHERE id = ?");
+
         $consulta->execute([$id]);
 
         // verifica se produto existe
@@ -41,7 +45,13 @@ if (autenticar($db_con)) {
             // verifica se o usuario autenticado é o criador do produto
             if ($produto['usuarios_login'] === $login) {
                 // prepara a consulta
-                $consulta = $db_con->prepare("DELETE FROM produtos WHERE id = ?");
+                $consulta = $db_con->prepare(
+                    "DELETE 
+                     FROM produtos 
+                     WHERE id = ?");
+
+                $resposta["sucesso"] = 1;   
+
                 if ($consulta->execute([$id])) {
                     $resposta["sucesso"] = 1;
                     $resposta["mensagem"] = "Produto excluido.";
@@ -50,21 +60,36 @@ if (autenticar($db_con)) {
                     $resposta["erro"] = "Erro ao excluir produto.";
                     $resposta["cod_erro"] = 2;
                 }
+
+            } else {
+                $resposta["sucesso"] = 0;
+                $resposta["erro"] = "falha de autenticação.";
+                $resposta["cod_erro"] = 0;
             }
+            
         } else {
             $resposta["sucesso"] = 0;
             $resposta["erro"] = "Produto nao encontrado.";
             $resposta["cod_erro"] = 4;
         }
+
     } else {
         // não foi enviado nenhum parâmetro válido para o servidor
         $resposta["sucesso"] = 0;
         $resposta["erro"] = "Faltam parâmetros.";
         $resposta["cod_erro"] = 3;
     }
+
 } else {
     // senha ou usuário nao confere
     $resposta["sucesso"] = 0;
     $resposta["erro"] = "Login ou senha nao conferem.";
     $resposta["cod_erro"] = 0;
 }
+
+// A conexão com o bd sempre tem que ser fechada
+$db_con = null;
+
+// converte o array de resposta em uma string no formato JSON e 
+// imprime na tela.
+echo json_encode($resposta);

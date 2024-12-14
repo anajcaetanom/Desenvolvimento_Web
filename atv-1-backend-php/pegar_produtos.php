@@ -32,7 +32,7 @@ require_once('autenticacao.php');
 $resposta = array();
 
 // verifica se o usuário conseguiu autenticar
-if(autenticar($db_con)) {
+if (autenticar($db_con)) {
 	
 	// Primeiro, verifica-se se todos os parametros foram enviados pelo cliente.
 	// limit - quantidade de produtos a ser entregues
@@ -44,11 +44,22 @@ if(autenticar($db_con)) {
 
         // verifica se algum login foi passado como parâmetro
         if (isset($_GET['login'])) {
+
             $login = $_GET['login'];
 
-            $consulta = $db_con->prepare("SELECT * FROM produtos WHERE usuarios_login = ? LIMIT " . $limit . " OFFSET " . $offset);
-            if($consulta->execute([$login])) {
-                $stmt = $db_con->prepare("SELECT COUNT(*) FROM produtos WHERE usuarios_login = ?");
+            $consulta = $db_con->prepare(
+                "SELECT * 
+                FROM produtos 
+                WHERE usuarios_login = ? 
+                LIMIT " . $limit . " OFFSET " . $offset);
+
+            if ($consulta->execute([$login])) {
+
+                $stmt = $db_con->prepare(
+                    "SELECT COUNT(*) 
+                    FROM produtos 
+                    WHERE usuarios_login = ?");
+                    
                 $stmt->execute([$login]);
                 $nProdutos = $stmt->fetchColumn();
 
@@ -79,14 +90,23 @@ if(autenticar($db_con)) {
                         // Adiciona o produto no array de produtos.
                         array_push($resposta["produtos"], $produto);
                     }
+                    $resposta["sucesso"] = 1;
                 }
             }
+
         } else {
             // Realiza uma consulta ao BD e obtem todos os produtos.
-            $consulta = $db_con->prepare("SELECT * FROM produtos LIMIT " . $limit . " OFFSET " . $offset);
-            if($consulta->execute()) {
+            $consulta = $db_con->prepare(
+                "SELECT * 
+                FROM produtos 
+                LIMIT " . $limit . " OFFSET " . $offset);
 
-                $nProdutos = $db_con->query("SELECT COUNT(*) FROM produtos")->fetchColumn();
+            if ($consulta->execute()) {
+
+                $nProdutos = $db_con->query(
+                    "SELECT COUNT(*) 
+                    FROM produtos")
+                    ->fetchColumn();
 
                 // Caso existam produtos no BD, eles sao armazenados na
                 // chave "produtos". O valor dessa chave e formado por um
@@ -115,9 +135,10 @@ if(autenticar($db_con)) {
                         // Adiciona o produto no array de produtos.
                         array_push($resposta["produtos"], $produto);
                     }
+                    $resposta["sucesso"] = 1;
                 }
-            }
-            else {
+
+            } else {
                 // Caso ocorra falha no BD, o cliente
                 // recebe a chave "sucesso" com valor 0. A chave "erro" indica o
                 // motivo da falha.
@@ -126,8 +147,8 @@ if(autenticar($db_con)) {
                 $resposta["cod_erro"] = 2;
             }
         }
-	}
-	else {
+
+	} else {
 		// Se a requisicao foi feita incorretamente, ou seja, os parametros 
 		// nao foram enviados corretamente para o servidor, o cliente 
 		// recebe a chave "sucesso" com valor 0. A chave "erro" indica o 
@@ -136,12 +157,12 @@ if(autenticar($db_con)) {
 		$resposta["erro"] = "Campo requerido não preenchido";
 		$resposta["cod_erro"] = 3;
 	}
-}
-else {
+
+} else {
 	// senha ou usuario nao confere
 	$resposta["sucesso"] = 0;
-	$resposta["erro"] = "usuario ou senha não confere";
-	$resposta["cod_erro"] = 0;
+	$resposta["erro"] = "falha de autenticação.";
+	$resposta["cod_erro"] = 3;
 }
 
 // fecha conexão com o bd
